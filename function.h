@@ -1,14 +1,10 @@
 #ifndef FUCTION_H_
 #define FUCTION_H_
-#include "exceptions.h"
-#include "plane.h"
-#include "train.h"
-#include "car.h"
+#include "Keeper.h"
 
-
-plane* work(plane *p, int &s);  // Для работы самолетом
-train* work(train *t, int &s);  // Для работы с поездом
-car* work(car *c, int &s);      // Для работы с авто
+void work_plane(Keeper *kpr);		 // Для работы самолетом
+void work_train(Keeper *kpr);		 // Для работы с поездом
+void work_car(Keeper *kpr);			 // Для работы с авто
 
 template <typename T>
 void printName(T *tr, int s);  //Печать массива объектов по id перевозчика переданного типа

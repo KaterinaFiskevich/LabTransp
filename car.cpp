@@ -241,7 +241,7 @@ void car::writeYear() const {
 	std::cout << '\n';
 }
 void car::writeBrand() const {
-	std::cout << "Посещаемые города: " << ((brand) ? brand : emp) << '\n';
+	std::cout << "Марка: " << ((brand) ? brand : emp) << '\n';
 }
 void car::writeModel() const {
 	std::cout << "Модель: " << ((model) ? model : emp) << '\n';
@@ -339,7 +339,7 @@ car& car::operator=(const car& c) {
 
 //Деструктор
 car::~car() {
-	std::cout << "~car()\n";
+	std::cout << "\t\t\t~car()\n";
 	delete[] brand;
 	delete[] model;
 	delete[] city;

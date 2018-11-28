@@ -1,10 +1,9 @@
 #include "function.h"
 
+using std::cout;
+using std::cin;
 
-plane* work(plane *p, int &s) {
-	using std::cout;
-	using std::cin;
-	int i;
+void work_plane(Keeper *kpr) {
 	int ch;
 	bool flag = true;
 	plane *ptr;
@@ -24,52 +23,42 @@ plane* work(plane *p, int &s) {
 		case 1:
 			cout << "   Если хотите оставить параметр пустым нажмите enter\n";
 			cout << "   Символы-разделители: " << separator << "\n";
-			ptr = new plane[s + 1];
-			for (i = 0; i < s; ++i) {
-				ptr[i] = *(p + i);
-			}
-			delete[] p;
-			p = ptr;
-			p[s].readType();
-			p[s].readName();
-			p[s].readWeight();
-			p[s].readDim();
-			p[s].readCity();
-			++s;
+
+			ptr = new plane();
+			ptr->readType();
+			ptr->readName();
+			ptr->readWeight();
+			ptr->readDim();
+			ptr->readCity();
+			kpr->add_transpoter(ptr, 0);
+
+			delete ptr;
 			break;
 		case 2:
-			if (s) {
+			if (kpr->get_size(0)) {
 				try {
-					ch = select(p, s);
+					ch = select(kpr->get_plane(), kpr->get_size(0));
 				}
 				catch (exceptions e) {
-					std::cout << e.what();
+					cout << e.what();
 					break;
 				}
-				for (i = 0; i < ch; ++i) {
-					ptr[i] = p[i];
-				}
-				for (++i; i < s; ++i) {
-					ptr[i - 1] = p[i];
-				}
-				delete[] p;
-				p = ptr;
-				--s;
-				std::cout << "Удаление завершено\n";
+				kpr->delete_transpoter(0, ch);
+				cout << "Удаление завершено\n";
 			}
 			else {
-				printName(p, s);
+				print(kpr->get_plane(), kpr->get_size(0));
 			}
 			break;
 		case 3:
-			if (s) {
+			if (kpr->get_size(0)) {
 				int n;
 				char *str;
 				try {
-					ch = select(p, s);
+					ch = select(kpr->get_plane(), kpr->get_size(0));
 				}
 				catch (exceptions e) {
-					std::cout << e.what();
+					cout << e.what();
 					break;
 				}
 				cout
@@ -101,45 +90,45 @@ plane* work(plane *p, int &s) {
 					getchar();
 					switch (n--) {
 					case 1:
-						p[ch].readType();
-						std::cout << "\t\tУспешно\n";
+						(kpr->get_plane() + ch)->readType();
+						cout << "\t\tУспешно\n";
 						break;
 					case 2:
-						p[ch].readName();
-						std::cout << "\t\tУспешно\n";
+						(kpr->get_plane() + ch)->readName();
+						cout << "\t\tУспешно\n";
 						break;
 					case 3:
-						p[ch].readWeight();
-						std::cout << "\tУспешно\n";
+						(kpr->get_plane() + ch)->readWeight();
+						cout << "\tУспешно\n";
 						break;
 					case 4:
-						p[ch].readDim();
-						std::cout << "\tУспешно\n";
+						(kpr->get_plane() + ch)->readDim();
+						cout << "\tУспешно\n";
 						break;
 					case 5:
-						p[ch].readCity();
-						std::cout << "\tУспешно\n";
+						(kpr->get_plane() + ch)->readCity();
+						cout << "\tУспешно\n";
 						break;
 					case 6:
 						str = _strrd("\tВведите название города: ");
-						p[ch].addCity(str);
-						std::cout << "\tУспешно\n";
+						(kpr->get_plane() + ch)->addCity(str);
+						cout << "\tУспешно\n";
 						break;
 					case 7: 
-						if(p[ch].getCities()) {
+						if((kpr->get_plane() + ch)->getCities()) {
 							char *str2;
 							cout << "\t";
-							p[ch].writeCity();
+							(kpr->get_plane() + ch)->writeCity();
 							str = _strrd("Введите название заменяемого города: ");
 							str2 = _strrd("Введите название заменяющего города: ");
-							if (p[ch].rewriteCity(str, str2))
-								std::cout << "\tУспешно\n";
+							if ((kpr->get_plane() + ch)->rewriteCity(str, str2))
+								cout << "\tУспешно\n";
 							else
-								std::cout << "\tГород не присутствует в списке\n";
+								cout << "\tГород не присутствует в списке\n";
 							delete[] str2;
 						}
 						else 
-							std::cout << "\tСписок посещаемых городов пуст";
+							cout << "\tСписок посещаемых городов пуст";
 						break;
 					case 8:
 						cout
@@ -150,61 +139,61 @@ plane* work(plane *p, int &s) {
 						cin >> n;
 						getchar();
 						str = _strrd("Введите значение: ");
-						p[ch].rewriteDim(n, _strdbl(str));
-						std::cout << "Успешно\n";
+						(kpr->get_plane() + ch)->rewriteDim(n, _strdbl(str));
+						cout << "Успешно\n";
 						break;
 					case 9:
 						cout << "\t";
-						p[ch].writeType();
+						(kpr->get_plane() + ch)->writeType();
 						break;
 					case 10:
 						cout << "\t";
-						p[ch].writeName();
+						(kpr->get_plane() + ch)->writeName();
 						break;
 					case 11:
 						cout << "\t";
-						p[ch].writeWeight();
+						(kpr->get_plane() + ch)->writeWeight();
 						break;
 					case 12:
 						cout << "\t";
-						p[ch].writeDim();
+						(kpr->get_plane() + ch)->writeDim();
 						break;
 					case 13:
 						cout << "\t";
-						p[ch].writeCity();
+						(kpr->get_plane() + ch)->writeCity();
 						break;
 					case 14:
-						p[ch].removeType();
-						std::cout << "\tУспешно\n";
+						(kpr->get_plane() + ch)->removeType();
+						cout << "\tУспешно\n";
 						break;
 					case 15:
-						p[ch].removeName();
-						std::cout << "\tУспешно\n";
+						(kpr->get_plane() + ch)->removeName();
+						cout << "\tУспешно\n";
 						break;
 					case 16:
-						p[ch].removeWeight();
-						std::cout << "\tУспешно\n";
+						(kpr->get_plane() + ch)->removeWeight();
+						cout << "\tУспешно\n";
 						break;
 					case 17:
-						p[ch].removeDim();
-						std::cout << "\tУспешно\n";
+						(kpr->get_plane() + ch)->removeDim();
+						cout << "\tУспешно\n";
 						break;
 					case 18:
-						if (p[ch].getCities()) {
+						if ((kpr->get_plane() + ch)->getCities()) {
 							cout << "\t";
-							p[ch].writeCity();
+							(kpr->get_plane() + ch)->writeCity();
 							str = _strrd("Введите название города: ");
-							if (p[ch].removeCity(str))
-								std::cout << "\tУспешно\n";
+							if ((kpr->get_plane() + ch)->removeCity(str))
+								cout << "\tУспешно\n";
 							else
-								std::cout << "\tГород не присутствует в списке\n";
+								cout << "\tГород не присутствует в списке\n";
 						}
 						else
-							std::cout << "\tСписок посещаемых городов пуст";
+							cout << "\tСписок посещаемых городов пуст";
 						break;
 					case 19:
-						p[ch].removeCities();
-						std::cout << "\tУспешно\n";
+						(kpr->get_plane() + ch)->removeCities();
+						cout << "\tУспешно\n";
 						break;
 					case 20:
 						flag = false;
@@ -216,14 +205,14 @@ plane* work(plane *p, int &s) {
 				flag = true;
 			}
 			else {
-				print(p, s);
+				print(kpr->get_plane(), kpr->get_size(0));
 			}
 			break;
 		case 4:
-			printName(p, s);
+			printName(kpr->get_plane(), kpr->get_size(0));
 			break;
 		case 5:
-			print(p, s);
+			print(kpr->get_plane(), kpr->get_size(0));
 			break;
 		case 6:
 			flag = false;
@@ -231,12 +220,8 @@ plane* work(plane *p, int &s) {
 		}
 		cout << '\n';
 	}
-	return p;
 }
-train* work(train *t, int &s) {
-	using std::cout;
-	using std::cin;
-	int i;
+void work_train(Keeper *kpr) {
 	int ch;
 	bool flag = true;
 	train *ptr;
@@ -256,58 +241,47 @@ train* work(train *t, int &s) {
 		case 1:
 			cout << "   Если хотите оставить параметр пустым нажмите enter\n";
 			cout << "   Символы-разделители: " << separator << '\n';
-			ptr = new train[s + 1];
-			for (i = 0; i < s; ++i) {
-				ptr[i] = *(t + i);
-			}
-			delete[] t;
-			t = ptr;
-			t[s].readName();
-			t[s].readYear();
-			t[s].readCity();
-			t[s].readCount();
-			t[s].readWeight();
-			++s;
+
+			ptr = new train();
+			ptr->readName();
+			ptr->readYear();
+			ptr->readCity();
+			ptr->readCount();
+			ptr->readWeight();
+			kpr->add_transpoter(ptr, 1);
+
+			delete ptr;
 			break;
 		case 2:
-			if (s) {
+			if (kpr->get_size(1)) {
 				try {
-					ch = select(t, s);
+					ch = select(kpr->get_train(), kpr->get_size(1));
 				}
 				catch (exceptions e) {
-					std::cout << e.what();
+					cout << e.what();
 					break;
 				}
-				ptr = new train[s - 1];
-				for (i = 0; i < ch; ++i) {
-					ptr[i] = t[i];
-				}
-				for (++i; i < s; ++i) {
-					ptr[i - 1] = t[i];
-				}
-				delete[] t;
-				t = ptr;
-				--s;
-				std::cout << "\tУдаление завершено\n";
+				kpr->delete_transpoter(1, ch);
+				cout << "\tУдаление завершено\n";
 			}
 			else {
-				print(t, s);
+				print(kpr->get_train(), kpr->get_size(1));
 			}
 			break;
 		case 3:
-			if (s) {
+			if (kpr->get_size(1)) {
 				int n;
 				char *str;
 				try {
-					ch = select(t, s);
+					ch = select(kpr->get_train(), kpr->get_size(1));
 				}
 				catch (exceptions e) {
-					std::cout << e.what();
+					cout << e.what();
 					break;
 				}
 				cout
 					<< "\n\n"
-					<< "    1| Задать новое имя\n"
+					<< "    1| Задать новый имя\n"
 					<< "    2| Задать новый год выпуска\n"
 					<< "    3| Задать новые посещаемые города\n"
 					<< "    4| Задать новое кол-во вагонов\n"
@@ -320,12 +294,12 @@ train* work(train *t, int &s) {
 					<< "   11| Вывести на экран посещаемые города\n"
 					<< "   12| Вывести на экран кол-во вагонов\n"
 					<< "   13| Вывести на экран перевозимый вес\n"
-					<< "   14| Очистить поле имени\n"
-					<< "   15| Очистить поле года выпуска\n"
-					<< "   16| Очистить поле посещаемых городов\n"
+					<< "   14| Отчситить поле имени\n"
+					<< "   15| Отчситить поле года выпуска\n"
+					<< "   16| Отчситить поле посещаемых городов\n"
 					<< "   17| Удалить город\n"
-					<< "   18| Очистить поле кол-ва вагонов\n"
-					<< "   19| Очистить поле перевозимого веса\n"
+					<< "   18| Отчситить поле кол-ва вагонов\n"
+					<< "   19| Отчситить поле перевозимого веса\n"
 					<< "   20| Вернуться\n";
 				while (flag) {
 					str = NULL;
@@ -334,104 +308,104 @@ train* work(train *t, int &s) {
 					getchar();
 					switch (n--) {
 					case 1:
-						t[ch].readName();
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->readName();
+						cout << "\tУспешно\n";
 						break;
 					case 2:
-						t[ch].readYear();
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->readYear();
+						cout << "\tУспешно\n";
 						break;
 					case 3:
-						t[ch].readCity();
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->readCity();
+						cout << "\tУспешно\n";
 						break;
 					case 4:
-						t[ch].readCount();
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->readCount();
+						cout << "\tУспешно\n";
 						break;
 					case 5:
-						t[ch].readWeight();
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->readWeight();
+						cout << "\tУспешно\n";
 						break;
 					case 6:
 						str = _strrd("\tВведите название города: ");
-						t[ch].addCity(str);
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->addCity(str);
+						cout << "\tУспешно\n";
 						break;
 					case 7:
 						cout << "\t";
 						str = _strrd("Введите кол-во добавляемых вагонов: ");
-						t[ch].addCount(int(_strdbl(str)));
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->addCount(int(_strdbl(str)));
+						cout << "\tУспешно\n";
 						break;
 					case 8:
-						if (t[ch].getCities()) {
+						if ((kpr->get_train() + ch)->getCities()) {
 							char *str2;
 							cout << "\t";
-							t[ch].writeCity();
+							(kpr->get_train() + ch)->writeCity();
 							str = _strrd("Введите название заменяемого города: ");
 							str2 = _strrd("Введите название заменяющего города: ");
-							if (t[ch].rewriteCity(str, str2))
-								std::cout << "\tУспешно\n";
+							if ((kpr->get_train() + ch)->rewriteCity(str, str2))
+								cout << "\tУспешно\n";
 							else
-								std::cout << "\tГород не присутствует в списке\n";
+								cout << "\tГород не присутствует в списке\n";
 							delete[] str2;
 						}
 						else
-							std::cout << "\tСписок посещаемых городов пуст";
+							cout << "\tСписок посещаемых городов пуст";
 						break;
 					case 9:
 						cout << "\t";
-						t[ch].writeName();
+						(kpr->get_train() + ch)->writeName();
 						break;
 					case 10:
 						cout << "\t";
-						t[ch].writeYear();
+						(kpr->get_train() + ch)->writeYear();
 						break;
 					case 11:
 						cout << "\t";
-						t[ch].writeCity();
+						(kpr->get_train() + ch)->writeCity();
 						break;
 					case 12:
 						cout << "\t";
-						t[ch].writeCount();
+						(kpr->get_train() + ch)->writeCount();
 						break;
 					case 13:
 						cout << "\t";
-						t[ch].writeWeight();
+						(kpr->get_train() + ch)->writeWeight();
 						break;
 					case 14:
-						t[ch].removeName();
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->removeName();
+						cout << "\tУспешно\n";
 						break;
 					case 15:
-						t[ch].removeYear();
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->removeYear();
+						cout << "\tУспешно\n";
 						break;
 					case 16:
-						t[ch].removeCities();
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->removeCities();
+						cout << "\tУспешно\n";
 						break;
 					case 17:
-						if (t[ch].getCities()) {
+						if ((kpr->get_train() + ch)->getCities()) {
 							cout << "\t";
-							t[ch].writeCity();
+							(kpr->get_train() + ch)->writeCity();
 							str = _strrd("Введите название города: ");
-							if (t[ch].removeCity(str))
-								std::cout << "\tУспешно\n";
+							if ((kpr->get_train() + ch)->removeCity(str))
+								cout << "\tУспешно\n";
 							else
-								std::cout << "\tГород не присутствует в списке\n";
+								cout << "\tГород не присутствует в списке\n";
 						}
 						else
-							std::cout << "\tСписок посещаемых городов пуст";
+							cout << "\tСписок посещаемых городов пуст";
 						break;
 					case 18:
-						t[ch].removeCount();
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->removeCount();
+						cout << "\tУспешно\n";
 						break;
 					case 19:
-						t[ch].removeWeight();
-						std::cout << "\tУспешно\n";
+						(kpr->get_train() + ch)->removeWeight();
+						cout << "\tУспешно\n";
 						break;
 					case 20:
 						flag = false;
@@ -443,14 +417,14 @@ train* work(train *t, int &s) {
 				flag = true;
 			}
 			else {
-				print(t, s);
+			print(kpr->get_train(), kpr->get_size(1));
 			}
 			break;
 		case 4:
-			printName(t, s);
+			printName(kpr->get_train(), kpr->get_size(1));
 			break;
 		case 5:
-			print(t, s);
+			print(kpr->get_train(), kpr->get_size(1));
 			break;
 		case 6:
 			flag = false;
@@ -458,12 +432,8 @@ train* work(train *t, int &s) {
 		}
 		cout << '\n';
 	}
-	return t;
 }
-car* work(car *cr, int &s) {
-	using std::cout;
-	using std::cin;
-	int i;
+void work_car(Keeper *kpr) {
 	int ch;
 	bool flag = true;
 	car *ptr;
@@ -483,53 +453,41 @@ car* work(car *cr, int &s) {
 		case 1:
 			cout << "   Если хотите оставить параметр пустым нажмите enter\n";
 			cout << "   Символы-разделители: " << separator << '\n';
-			ptr = new car[s + 1];
-			for (i = 0; i < s; ++i) {
-				ptr[i] = *(cr + i);
-			}
-			delete[] cr;
-			cr = ptr;
-			cr[s].readYear();
-			cr[s].readBrand();
-			cr[s].readModel();
-			cr[s].readCity();
-			cr[s].readWeight();
-			++s;
+			ptr = new car();
+			ptr->readYear();
+			ptr->readBrand();
+			ptr->readModel();
+			ptr->readCity();
+			ptr->readWeight();
+			kpr->add_transpoter(ptr, 2);
+
+			delete ptr;
 			break;
 		case 2:
-			if (s) {
+			if (kpr->get_size(2)) {
 				try {
-					ch = select(cr, s);
+					ch = select(kpr->get_car(), kpr->get_size(2));
 				}
 				catch (exceptions e) {
-					std::cout << e.what();
+					cout << e.what();
 					break;
 				}
-				ptr = new car[s - 1];
-				for (i = 0; i < ch; ++i) {
-					ptr[i] = cr[i];
-				}
-				for (++i; i < s; ++i) {
-					ptr[i - 1] = cr[i];
-				}
-				delete[] cr;
-				cr = ptr;
-				--s;
-				std::cout << "\tУдаление завершено\n";
+				kpr->delete_transpoter(2, ch);
+				cout << "\tУдаление завершено\n";
 			}
 			else {
-				print(cr, s);
+				print(kpr->get_car(), kpr->get_size(2));
 			}
 			break;
 		case 3:
-			if (s) {
+			if (kpr->get_size(2)) {
 				int n;
 				char *str;
 				try {
-					ch = select(cr, s);
+					ch = select(kpr->get_car(), kpr->get_size(2));
 				}
 				catch (exceptions e) {
-					std::cout << e.what();
+					cout << e.what();
 					break;
 				}
 				cout
@@ -547,12 +505,12 @@ car* work(car *cr, int &s) {
 					<< "   11| Вывести на экран модель\n"
 					<< "   12| Вывести на экран посещаемые города\n"
 					<< "   13| Вывести на экран перевозимый вес\n"
-					<< "   14| Очистить поле года выпуска\n"
-					<< "   15| Очистить поле марки\n"
-					<< "   16| Очистить поле модели\n"
+					<< "   14| Отчистить поле года выпуска\n"
+					<< "   15| Отчистить поле марки\n"
+					<< "   16| Отчистить поле модели\n"
 					<< "   17| Удалить город\n"
-					<< "   18| Очистить поле посещаемых городв\n"
-					<< "   19| Очистить поле перевозимого веса\n"
+					<< "   18| Отчистить поле посещаемых городв\n"
+					<< "   19| Отчистить поле перевозимого веса\n"
 					<< "   20| Вернуться\n";
 				while (flag) {
 					str = NULL;
@@ -561,114 +519,114 @@ car* work(car *cr, int &s) {
 					getchar();
 					switch (n--) {
 					case 1:
-						cr[ch].readYear();
-						std::cout << "\tУспешно\n";
+						(kpr->get_car() + ch)->readYear();
+						cout << "\tУспешно\n";
 						break;
 					case 2:
-						cr[ch].readBrand();
-						std::cout << "\tУспешно\n";
+						(kpr->get_car() + ch)->readBrand();
+						cout << "\tУспешно\n";
 						break;
 					case 3:
-						cr[ch].readModel();
-						std::cout << "\tУспешно\n";
+						(kpr->get_car() + ch)->readModel();
+						cout << "\tУспешно\n";
 						break;
 					case 4:
-						cr[ch].readCity();
-						std::cout << "\tУспешно\n";
+						(kpr->get_car() + ch)->readCity();
+						cout << "\tУспешно\n";
 						break;
 					case 5:
-						cr[ch].readWeight();
-						std::cout << "\tУспешно\n";
+						(kpr->get_car() + ch)->readWeight();
+						cout << "\tУспешно\n";
 						break;
 					case 6: 
 						double d;
 						str = _strrd("\tВведите название города: ");
 						d = _strdbl(_strrd("\tВведите кол-во часов доставки: "));
-						cr[ch].addCity(str, d);
-						std::cout << "\tУспешно\n";
+						(kpr->get_car() + ch)->addCity(str, d);
+						cout << "\tУспешно\n";
 						break;
 					case 7:
-						if (cr[ch].getCities()) {
+						if ((kpr->get_car() + ch)->getCities()) {
 							char *str2;
 							cout << "\t";
-							cr[ch].writeCity();
+							(kpr->get_car() + ch)->writeCity();
 							str = _strrd("Введите название заменяемого города: ");
 							str2 = _strrd("Введите название заменяющего города: ");
-							if (cr[ch].rewriteCity(str, str2))
-								std::cout << "\tУспешно\n";
+							if ((kpr->get_car() + ch)->rewriteCity(str, str2))
+								cout << "\tУспешно\n";
 							else
-								std::cout << "\tГород не присутствует в списке\n";
+								cout << "\tГород не присутствует в списке\n";
 							delete[] str2;
 						}
 						else
-							std::cout << "\tСписок посещаемых городов пуст\n";
+							cout << "\tСписок посещаемых городов пуст\n";
 						break;
 					case 8:
-						if (cr[ch].getCities()) {
+						if ((kpr->get_car() + ch)->getCities()) {
 							double d;
 							cout << "\t";
-							cr[ch].writeCity();
+							(kpr->get_car() + ch)->writeCity();
 							str = _strrd("Введите название города: ");
 							d = _strdbl(_strrd("Введите новые часы доставки: "));
-							if (cr[ch].rewriteHours(str, d))
-								std::cout << "\tУспешно\n";
+							if ((kpr->get_car() + ch)->rewriteHours(str, d))
+								cout << "\tУспешно\n";
 							else
-								std::cout << "\tГород не присутствует в списке\n";
+								cout << "\tГород не присутствует в списке\n";
 						}
 						else
-							std::cout << "\tСписок посещаемых городов пуст";
+							cout << "\tСписок посещаемых городов пуст";
 						break;
 					case 9:
 						cout << "\t";
-						cr[ch].writeYear();
+						(kpr->get_car() + ch)->writeYear();
 						break;
 					case 10:
 						cout << "\t";
-						cr[ch].writeBrand();
+						(kpr->get_car() + ch)->writeBrand();
 						break;
 					case 11:
 						cout << "\t";
-						cr[ch].writeModel();
+						(kpr->get_car() + ch)->writeModel();
 						break;
 					case 12:
-						cr[ch].writeCity();
+						(kpr->get_car() + ch)->writeCity();
 						break;
 					case 13:
 						cout << "\t";
-						cr[ch].writeWeight();
+						(kpr->get_car() + ch)->writeWeight();
 						break;
 					case 14:
-						cr[ch].removeYear();
-						std::cout << "\tУспешно\n";
+						(kpr->get_car() + ch)->removeYear();
+						cout << "\tУспешно\n";
 						break;
 					case 15:
-						cr[ch].removeBrand();
-						std::cout << "\tУспешно\n";
+						(kpr->get_car() + ch)->removeBrand();
+						cout << "\tУспешно\n";
 						break;
 					case 16:
-						cr[ch].removeModel();
-						std::cout << "\tУспешно\n";
+						(kpr->get_car() + ch)->removeModel();
+						cout << "\tУспешно\n";
 						break;
 					case 17:
-						if (cr[ch].getCities()) {
+						if ((kpr->get_car() + ch)->getCities()) {
 							cout << "\t";
-							cr[ch].writeCity();
+							(kpr->get_car() + ch)->writeCity();
 							str = _strrd("Введите название города: ");
-							if (cr[ch].removeCity(str))
-								std::cout << "\tУспешно\n";
+							if ((kpr->get_car() + ch)->removeCity(str))
+								cout << "\tУспешно\n";
 							else
-								std::cout << "\tГород не присутствует в списке\n";
+								cout << "\tГород не присутствует в списке\n";
 						}
 						else
-							std::cout << "\tСписок посещаемых городов пуст";
+							cout << "\tСписок посещаемых городов пуст";
 						break;
 					case 18:
-						cr[ch].removeCities();
-						std::cout << "\tУспешно\n";
+						(kpr->get_car() + ch)->removeCities();
+						cout << "\tУспешно\n";
 						break;
 					case 19:
-						cr[ch].removeWeight();
-						std::cout << "\tУспешно\n";
+						(kpr->get_car() + ch)->removeWeight();
+						cout << "\tУспешно\n";
 						break;
 					case 20:
 						flag = false;
@@ -680,14 +638,14 @@ car* work(car *cr, int &s) {
 				flag = true;
 			}
 			else {
-				print(cr, s);
+			print(kpr->get_car(), kpr->get_size(2));
 			}
 			break;
 		case 4:
-			printName(cr, s);
+			printName(kpr->get_car(), kpr->get_size(2));
 			break;
 		case 5:
-			print(cr, s);
+			print(kpr->get_car(), kpr->get_size(2));
 			break;
 		case 6:
 			flag = false;
@@ -695,39 +653,38 @@ car* work(car *cr, int &s) {
 		}
 		cout << '\n';
 	}
-	return cr;
 }
 
 template <typename T>
 void printName(T *tr, int s) {
-	std::cout << "\n\tСписок по именам: ";
+	cout << "\n\tСписок по именам: ";
 	const char *c;
 	for (int i = 0; i < s; ++i) {
 		c = tr[i].getId();
-		if (c) std::cout << c << " ";
-		else std::cout << '#' << i << " ";
+		if (c) cout << c << " ";
+		else cout << '#' << i << " ";
 	}
-	if (!s) std::cout << "пуст";
-	std::cout << "\n";
+	if (!s) cout << "пуст";
+	cout << "\n";
 }
 template <typename T>
 void print(T *tr, int s) {
-	std::cout << "\n\tПолный список перевозчика данного типа: ";
-	if (!s) std::cout << "пуст";
-	else std::cout << '\n';
+	cout << "\n\tПолный список перевозчика данного типа: ";
+	if (!s) cout << "пуст";
+	else cout << '\n';
 	for (int i = 0; i < s; ++i) {
-		std::cout << '|' << i << '|';
+		cout << '|' << i << '|';
 		tr[i].print();
 	}
-	std::cout << '\n';
+	cout << '\n';
 }
 template <typename T>
 int select(T *tr, int s) {
 	int ch;
 	printName(tr, s);
 	exceptions e("Номер самолета введен неверно\n");
-	std::cout << "Выберите номер(0..N): ";
-	std::cin >> ch;
+	cout << "Выберите номер(0..N): ";
+	cin >> ch;
 	getchar();
 	if (ch >= s)
 		throw e;

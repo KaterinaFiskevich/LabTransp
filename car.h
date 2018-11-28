@@ -28,6 +28,7 @@ public:
 	const char* getCities();            //Получение значения посещаемых городов
 	const double* getHours();           //Получение часов доставки
 	double getWeight();                 //Получение значения перевозимого веса
+	int getcountCity() { return countCity; }
 
 	void addCity(const char* c, double h);   //Добвление города в список посещаемых
 
@@ -72,4 +73,6 @@ private:
 };
 
 #endif //!CAR_H_
+
+
 

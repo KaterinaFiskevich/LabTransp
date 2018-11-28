@@ -7,10 +7,19 @@ int main() {
 		sizeT = 0,
 		sizeC = 0;
 	bool flag = true;
-	plane *p = NULL;
-	train *t = NULL;
-	car *c = NULL;
+	Keeper *kpr = new Keeper;
 	setlocale(LC_ALL, "Russian");
+	
+	std::cout << "Загрузить базу?(1 - y/0 - n) ";
+	std::cin >> ch;
+	getchar();
+	try {
+		if (ch) kpr->load();
+	}
+	catch (exceptions &e) {
+		std::cout << e.what() << std::endl;
+	}
+
 	while (flag) {
 		std::cout
 			<< "1. Самолет\n"
@@ -23,13 +32,13 @@ int main() {
 		std::cout << '\n';
 		switch (ch) {
 		case 1:
-			p = work(p, sizeP);
+			work_plane(kpr);
 			break;
 		case 2:
-			t = work(t, sizeT);
+			work_train(kpr);
 			break;
 		case 3:
-			c = work(c, sizeC);
+			work_car(kpr);
 			break;
 		case 4:
 			flag = false;
@@ -37,9 +46,17 @@ int main() {
 		}
 		std::cout << '\n';
 	}
-	delete[] p;
-	delete[] t;
-	delete[] c;
+	std::cout << "Сохранить перед выходом?(1 - y/0 - n) ";
+	std::cin >> ch;
+	getchar();
+	try {
+		if (ch) kpr->save();
+	}
+	catch (exceptions &e) {
+		std::cout << e.what() << std::endl;
+	}
+
+	delete kpr;
 	return 0;
 }
 

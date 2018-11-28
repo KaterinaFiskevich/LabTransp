@@ -226,7 +226,7 @@ void plane::writeCity() const {
 
 //Вывод на экран
 std::ostream& operator<<(std::ostream& os, const plane &p) {
-	os << "\tПараметры самолета:\n";
+	os << "\Параметры самолета:\n";
 	os << "\t\t";
 	p.writeType();
 	os << "\t\t";
@@ -266,3 +266,4 @@ plane::~plane() {
 	delete[] name;
 	delete[] city;
 }
+
